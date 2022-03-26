@@ -26,6 +26,8 @@ test_url = "http://app.hampalyzer.com/parsedlogs/Coach's-2022-Mar-18-24-51-q332e
 page = requests.get(test_url)
 soup = bs4.BeautifulSoup(page.text, 'html.parser')
 
+# TODO: Using the text right after fas-trophy w/ Final Score text to determine winner/loser/tie
+
 # fas fa-trophy
 """<p>
 <span class="team-title">Team A</span> —
@@ -51,10 +53,17 @@ team_b_raw = team_spans[3]
 team_a = team_parser(team_a_raw)
 team_b = team_parser(team_b_raw)
 
-"""TODO: Load player database, which maps STEAM_ID's to aliases (naive assumption that everyone only has 1 steam id)
+"""TODO: Upsert to player database, which maps STEAM_ID's to aliases (naive assumption that everyone only has 1 steam id)
 One to many relationship"""
 print(team_a)
 print(team_b)
+
+# TODO: Add win/loss/tie for each user? simplest implementation is steam_id, main alias, aliases, wins, losses, ties
+# I'll also normalize this to have one table for players with steam_id, name, alises
+# Another table for matches and you join between the two for match results? Maybe another separate table for results...
+# Still thinking about it.
+
+# TODO: Go through each player's stats page from logs and pull data per match. This will be way down the line I think.
 
 # If player not currently in player database, add them with alias from logfile
 # print(soup.prettify())
