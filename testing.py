@@ -26,9 +26,11 @@ test_url = "http://app.hampalyzer.com/parsedlogs/Coach's-2022-Mar-18-24-51-q332e
 page = requests.get(test_url)
 soup = bs4.BeautifulSoup(page.text, 'html.parser')
 
-# TODO: Using the text right after fas-trophy w/ Final Score text to determine winner/loser/tie
+final_score_raw = soup.find(class_='list-unstyled').contents[9].contents[1].string
+split_raw = final_score_raw.split(' – ')
+final_score_team_a = int(split_raw[0].split(' ')[-1])
+final_score_team_b = int(split_raw[1].split('\r')[0])
 
-# fas fa-trophy
 """<p>
 <span class="team-title">Team A</span> —
                     <span class="team-list">massa|2i
@@ -62,8 +64,18 @@ print(team_b)
 # I'll also normalize this to have one table for players with steam_id, name, alises
 # Another table for matches and you join between the two for match results? Maybe another separate table for results...
 # Still thinking about it.
+if final_score_team_a > final_score_team_b:
+    # Add win for members of team a
+    # Add loss for members of team b
+    print('stub')
+elif final_score_team_b > final_score_team_a:
+    # Add win for members of team a
+    # Add loss for members of team b
+    print('stub')
+elif final_score_team_a == final_score_team_b:
+    # Add tie for members of team a and b
+    print('stub')
 
 # TODO: Go through each player's stats page from logs and pull data per match. This will be way down the line I think.
 
 # If player not currently in player database, add them with alias from logfile
-# print(soup.prettify())
