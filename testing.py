@@ -3,7 +3,8 @@ import requests
 
 
 def team_parser(input_team: bs4.element.Tag) -> dict:
-    output_team = {}
+    output_team = []
+    list_index = 0
     for index, child in enumerate(input_team.children):
         if isinstance(child, bs4.element.NavigableString):
             raw_name_string = child.string
@@ -14,11 +15,12 @@ def team_parser(input_team: bs4.element.Tag) -> dict:
             else:
                 # Skip ", ", then grab upto newline char
                 cleaned_name_string = raw_name_string[2:raw_name_string.find('\n')]
-            output_team[index] = {'name': cleaned_name_string}
+            output_team.append({'name': cleaned_name_string})
         if isinstance(child, bs4.element.Tag):
             raw_tracker_url = child.get('href')
             first_equals_location = raw_tracker_url.find('=') + 1
-            output_team[index - 1]['steam_id'] = raw_tracker_url.split('&')[0][first_equals_location:]
+            output_team[list_index]['steam_id'] = raw_tracker_url.split('&')[0][first_equals_location:]
+            list_index += 1
     return output_team
 
 
@@ -57,25 +59,30 @@ team_b = team_parser(team_b_raw)
 
 """TODO: Upsert to player database, which maps STEAM_ID's to aliases (naive assumption that everyone only has 1 steam id)
 One to many relationship"""
-print(team_a)
-print(team_b)
+
 
 # TODO: Add win/loss/tie for each user? simplest implementation is steam_id, main alias, aliases, wins, losses, ties
 # I'll also normalize this to have one table for players with steam_id, name, alises
 # Another table for matches and you join between the two for match results? Maybe another separate table for results...
 # Still thinking about it.
 if final_score_team_a > final_score_team_b:
-    # Add win for members of team a
-    # Add loss for members of team b
-    print('stub')
+    for index, player in enumerate(team_a):
+        team_a[index]['match_result'] = 'win'
+    for index, player in enumerate(team_b):
+        team_b[index]['match_result'] = 'loss'
 elif final_score_team_b > final_score_team_a:
-    # Add win for members of team a
-    # Add loss for members of team b
-    print('stub')
+    for index, player in enumerate(team_b):
+        team_b[index]['match_result'] = 'win'
+    for index, player in enumerate(team_a):
+        team_a[index]['match_result'] = 'loss'
 elif final_score_team_a == final_score_team_b:
-    # Add tie for members of team a and b
-    print('stub')
+    for index, player in enumerate(team_a):
+        team_a[index]['match_result'] = 'tie'
+    for index, player in enumerate(team_b):
+        team_b[index]['match_result'] = 'tie'
 
 # TODO: Go through each player's stats page from logs and pull data per match. This will be way down the line I think.
 
 # If player not currently in player database, add them with alias from logfile
+print(team_a)
+print(team_b)
