@@ -24,8 +24,12 @@ def main():
         for match in api_response.json():
             # Don't hammer the site
             time.sleep(1)
-            team_a, team_b = match_parser(f"http://app.hampalyzer.com/parsedlogs/{match['parsedlog']}/")
-            print(team_a, team_b)
+            # For now, only parse logs from Coach's or Inhouse
+            if 'Coach' in match['parsedlog'] or 'Inhouse' in match['parsedlog']:
+                team_a, team_b = match_parser(f"http://app.hampalyzer.com/parsedlogs/{match['parsedlog']}/")
+                print(team_a, team_b)
+            else:
+                continue
         current_page += 1
 
 
