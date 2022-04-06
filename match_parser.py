@@ -39,6 +39,9 @@ def match_parser(input_match_log_url: str) -> tuple[dict, dict]:
 
     final_score_raw = soup.find(class_='list-unstyled').contents[9].contents[1].string
     split_raw = final_score_raw.split(' – ')
+    # Garbage log handling
+    if 'NaN' in split_raw:
+        return None, None
     final_score_team_a = int(split_raw[0].split(' ')[-1])
     final_score_team_b = int(split_raw[1].split('\r')[0])
 

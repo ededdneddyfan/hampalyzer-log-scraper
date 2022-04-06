@@ -31,7 +31,14 @@ def main():
             if 'Coach' in match['parsedlog'] or 'Inhouse' in match['parsedlog']:
                 is_coaches = 'Coach' in match['parsedlog']
                 is_inhouse = 'Inhouse' in match['parsedlog']
-                team_a, team_b = match_parser(f"http://app.hampalyzer.com/parsedlogs/{match['parsedlog']}/")
+                try:
+                    team_a, team_b = match_parser(f"http://app.hampalyzer.com/parsedlogs/{match['parsedlog']}/")
+                except Exception as e:
+                    print(f"http://app.hampalyzer.com/parsedlogs/{match['parsedlog']}/")
+                    print(players)
+                    print(e)
+                if team_a is None or team_b is None:
+                    continue
                 for player_a, player_b in zip(team_a, team_b):
                     # TODO: this is so lazy, fix later
                     try:
@@ -44,30 +51,30 @@ def main():
                         players[player_b['steam_id']] = {'aliases': {player_b['name']}}
                     if is_coaches:
                         if player_a['match_result'] == 'win':
-                            players[player_a['steam_id']]['coaches wins'] = players[player_a['steam_id']].get('wins', 0) + 1
+                            players[player_a['steam_id']]['coaches wins'] = players[player_a['steam_id']].get('coaches wins', 0) + 1
                         if player_a['match_result'] == 'loss':
-                            players[player_a['steam_id']]['coaches losses'] = players[player_a['steam_id']].get('losses', 0) + 1
+                            players[player_a['steam_id']]['coaches losses'] = players[player_a['steam_id']].get('coaches losses', 0) + 1
                         if player_a['match_result'] == 'tie':
-                            players[player_a['steam_id']]['coaches ties'] = players[player_a['steam_id']].get('ties', 0) + 1
+                            players[player_a['steam_id']]['coaches ties'] = players[player_a['steam_id']].get('coaches ties', 0) + 1
                         if player_b['match_result'] == 'win':
-                            players[player_b['steam_id']]['coaches wins'] = players[player_b['steam_id']].get('wins', 0) + 1
+                            players[player_b['steam_id']]['coaches wins'] = players[player_b['steam_id']].get('coaches wins', 0) + 1
                         if player_b['match_result'] == 'loss':
-                            players[player_b['steam_id']]['coaches losses'] = players[player_b['steam_id']].get('losses', 0) + 1
+                            players[player_b['steam_id']]['coaches losses'] = players[player_b['steam_id']].get('coaches losses', 0) + 1
                         if player_b['match_result'] == 'tie':
-                            players[player_b['steam_id']]['coaches ties'] = players[player_b['steam_id']].get('ties', 0) + 1
+                            players[player_b['steam_id']]['coaches ties'] = players[player_b['steam_id']].get('coaches ties', 0) + 1
                     if is_inhouse:
                         if player_a['match_result'] == 'win':
-                            players[player_a['steam_id']]['inhouse wins'] = players[player_a['steam_id']].get('wins', 0) + 1
+                            players[player_a['steam_id']]['inhouse wins'] = players[player_a['steam_id']].get('inhouse wins', 0) + 1
                         if player_a['match_result'] == 'loss':
-                            players[player_a['steam_id']]['inhouse losses'] = players[player_a['steam_id']].get('losses', 0) + 1
+                            players[player_a['steam_id']]['inhouse losses'] = players[player_a['steam_id']].get('inhouse losses', 0) + 1
                         if player_a['match_result'] == 'tie':
-                            players[player_a['steam_id']]['inhouse ties'] = players[player_a['steam_id']].get('ties', 0) + 1
+                            players[player_a['steam_id']]['inhouse ties'] = players[player_a['steam_id']].get('inhouse ties', 0) + 1
                         if player_b['match_result'] == 'win':
-                            players[player_b['steam_id']]['inhouse wins'] = players[player_b['steam_id']].get('wins', 0) + 1
+                            players[player_b['steam_id']]['inhouse wins'] = players[player_b['steam_id']].get('inhouse wins', 0) + 1
                         if player_b['match_result'] == 'loss':
-                            players[player_b['steam_id']]['inhouse losses'] = players[player_b['steam_id']].get('losses', 0) + 1
+                            players[player_b['steam_id']]['inhouse losses'] = players[player_b['steam_id']].get('inhouse losses', 0) + 1
                         if player_b['match_result'] == 'tie':
-                            players[player_b['steam_id']]['inhouse ties'] = players[player_b['steam_id']].get('ties', 0) + 1
+                            players[player_b['steam_id']]['inhouse ties'] = players[player_b['steam_id']].get('inhouse ties', 0) + 1
             else:
                 continue
         current_page += 1
